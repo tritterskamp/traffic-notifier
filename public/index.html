@@ -204,6 +204,7 @@ limitations under the License.
           document.getElementById('quickstart-sign-in-status').textContent = 'Signed in';
           document.getElementById('quickstart-sign-in').textContent = 'Sign out';
           document.getElementById('quickstart-account-details').textContent = JSON.stringify(user, null, '  ');
+          document.getElementById('google-sign-in').disabled = true;
           if (!emailVerified) {
             document.getElementById('quickstart-verify-email').disabled = false;
           }
@@ -214,6 +215,7 @@ limitations under the License.
           document.getElementById('quickstart-sign-in-status').textContent = 'Signed out';
           document.getElementById('quickstart-sign-in').textContent = 'Sign in';
           document.getElementById('quickstart-account-details').textContent = 'null';
+          document.getElementById('google-sign-in').disabled = false;
           // [END_EXCLUDE]
         }
         // [START_EXCLUDE silent]
@@ -269,7 +271,7 @@ limitations under the License.
           &nbsp;&nbsp;&nbsp;
           <button class="mdl-button mdl-js-button mdl-button--raised" id="quickstart-password-reset" name="verify-email">Send Password Reset Email</button>
           <br /><br />
-          <button class="mdl-button mdl-js-button mdl-button--raised" id="google-sign-in">Sign in with Google</button>
+          <button class="mdl-button mdl-js-button mdl-button--raised" id="google-sign-in" name="gsignin">Sign in with Google</button>
 
           <!-- Container where we'll display the user details -->
           <div class="quickstart-user-details-container">
