@@ -51,22 +51,6 @@ var ui = new firebaseui.auth.AuthUI(firebase.auth());
 var currentUid = null;
 
 /**
- * Redirects to the FirebaseUI widget.
- */
-var signInWithRedirect = function() {
-  window.location.assign('/widget');
-};
-
-
-/**
- * Open a popup with the FirebaseUI widget.
- */
-var signInWithPopup = function() {
-  window.open('/widget', 'Sign In', 'width=985,height=735');
-};
-
-
-/**
  * Displays the UI for a signed in user.
  * @param {!firebase.User} user
  */
@@ -92,6 +76,7 @@ var handleSignedInUser = function(user) {
 var handleSignedOutUser = function() {
   document.getElementById('user-signed-in').style.display = 'none';
   document.getElementById('user-signed-out').style.display = 'block';
+  document.getElementById('admin-panel').style.display = 'none';
   ui.start('#firebaseui-container', uiConfig);
 };
 
@@ -142,3 +127,47 @@ var initApp = function() {
 };
 
 window.addEventListener('load', initApp);
+
+
+/**
+ * Database Stuff
+ */
+// Get a reference to the database service
+var database = firebase.database(); 
+ 
+// Shortcuts to DOM Elements.
+var messageForm = document.getElementById('message-form');
+var messageField = document.getElementById('new-post-message');
+var messageResults = document.getElementById('results');
+
+// Save data to firebase
+function savedata(){
+  var message = messageField.value;
+
+  messagesRef.child('users').child(userId).push({fieldName:'messageField', text:message});
+  messageField.value = '';
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
