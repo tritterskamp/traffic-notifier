@@ -12,6 +12,53 @@
  * limitations under the License.
  */
 
+// Shortcuts to DOM Elements.
+var messageForm = document.getElementById('message-form');
+var messageField = document.getElementById('new-post-message');
+var messageResults = document.getElementById('results');
+var message = messageField.value;
+
+/**
+ * Database Functions
+ */
+// Get a key for a new Post.
+var newPostKey = firebase.database().ref().child('posts').push().key;
+
+// Write User Data
+function writeUserData(userId, name, email, imageUrl) {
+  firebase.database().ref('users/' + userId).set({
+    username: name,
+    email: email,
+    profile_picture : imageUrl
+  });
+} 
+
+// Save data to firebase
+function savedata(uid, username, text){
+  var postData = {
+        uid: uid,
+        username: username,
+        text: text      
+  }
+
+  // Write the new post's data simultaneously in the posts list and the user's post list.
+  var updates = {};
+  updates['/posts/' + newPostKey] = postData;
+  updates['/user-posts/' + uid + '/' + newPostKey] = postData;
+
+  return firebase.database().ref().update(updates);
+
+}
+
+// Saves message on form submit.
+messageForm.onsubmit = function(e) {
+    e.preventDefault();
+    savedata(firebase.auth().currentUser.uid, firebase.auth().currentUser.email, messageField.value);
+    messageField.value = '';
+    messageResults.innerHTML = message;   
+}
+
+
 /**
  * FirebaseUI initialization to be used in a Single Page application context.
  */
@@ -91,7 +138,12 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
   document.getElementById('loading').style.display = 'none';
   document.getElementById('loaded').style.display = 'block';
-  user ? handleSignedInUser(user) : handleSignedOutUser();
+  if (user) {
+      handleSignedInUser(user);
+      writeUserData(user.uid, user.displayName, user.email, user.photoURL);
+  } else {
+      handleSignedOutUser();
+  }
 });
 
 /**
@@ -126,34 +178,8 @@ var initApp = function() {
       });
 };
 
+// Bindings on load.
 window.addEventListener('load', initApp);
-
-
-/**
- * Database Stuff
- */
-// Get a reference to the database service
-var database = firebase.database(); 
- 
-// Shortcuts to DOM Elements.
-var messageForm = document.getElementById('message-form');
-var messageField = document.getElementById('new-post-message');
-var messageResults = document.getElementById('results');
-
-// Save data to firebase
-function savedata(){
-  var message = messageField.value;
-
-  messagesRef.child('users').child(userId).push({fieldName:'messageField', text:message});
-  messageField.value = '';
-}
-
-
-
-
-
-
-
 
 
 
