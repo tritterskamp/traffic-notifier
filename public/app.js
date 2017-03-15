@@ -13,50 +13,50 @@
  */
 
 // Shortcuts to DOM Elements.
-var messageForm = document.getElementById('message-form');
-var messageField = document.getElementById('new-post-message');
-var messageResults = document.getElementById('results');
-var message = messageField.value;
-
-/**
- * Database Functions
- */
-// Get a key for a new Post.
-var newPostKey = firebase.database().ref().child('posts').push().key;
-
-// Write User Data
-function writeUserData(userId, name, email, imageUrl) {
-  firebase.database().ref('users/' + userId).set({
-    username: name,
-    email: email,
-    profile_picture : imageUrl
-  });
-} 
-
-// Save data to firebase
-function savedata(uid, username, text){
-  var postData = {
-        uid: uid,
-        username: username,
-        text: text      
-  }
-
-  // Write the new post's data simultaneously in the posts list and the user's post list.
-  var updates = {};
-  updates['/posts/' + newPostKey] = postData;
-  updates['/user-posts/' + uid + '/' + newPostKey] = postData;
-
-  return firebase.database().ref().update(updates);
-
-}
-
-// Saves message on form submit.
-messageForm.onsubmit = function(e) {
-    e.preventDefault();
-    savedata(firebase.auth().currentUser.uid, firebase.auth().currentUser.email, messageField.value);
-    messageField.value = '';
-    messageResults.innerHTML = message;   
-}
+// var messageForm = document.getElementById('message-form');
+// var messageField = document.getElementById('new-post-message');
+// var messageResults = document.getElementById('results');
+// var message = messageField.value;
+//
+// /**
+//  * Database Functions
+//  */
+// // Get a key for a new Post.
+// var newPostKey = firebase.database().ref().child('posts').push().key;
+//
+// // Write User Data
+// function writeUserData(userId, name, email, imageUrl) {
+//   firebase.database().ref('users/' + userId).set({
+//     username: name,
+//     email: email,
+//     profile_picture : imageUrl
+//   });
+// }
+//
+// // Save data to firebase
+// function savedata(uid, username, text){
+//     var postData = {
+//         uid: uid,
+//         username: username,
+//         text: text
+//     }
+//
+//     // Write the new post's data simultaneously in the posts list and the user's post list.
+//     var updates = {};
+//     updates['/posts/' + newPostKey] = postData;
+//     updates['/user-posts/' + uid + '/' + newPostKey] = postData;
+//
+//     return firebase.database().ref().update(updates);
+//
+// }
+//
+// // Saves message on form submit.
+// messageForm.onsubmit = function(e) {
+//     e.preventDefault();
+//     savedata(firebase.auth().currentUser.uid, firebase.auth().currentUser.email, messageField.value);
+//     messageResults.innerHTML = 'You entered: ' + messageField.value;
+//     messageField.value = '';
+// }
 
 
 /**
@@ -180,20 +180,3 @@ var initApp = function() {
 
 // Bindings on load.
 window.addEventListener('load', initApp);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
