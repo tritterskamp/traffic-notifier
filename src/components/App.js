@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Login from './Login';
 import AdminPanel from './AdminPanel';
+import base from '../base';
 
 class App extends Component {
   constructor() {
@@ -11,6 +12,18 @@ class App extends Component {
     this.state = {
       formValues: {}
     };
+  }
+
+  componentWillMount() {
+    //this.ref = base.syncState(`${this.props.params.storeIf}/fishes`, {
+    this.ref = base.syncState(`form`, {
+      context: this,
+      state: 'formValues'
+    });
+  }
+
+  componentWillUnmount(){
+    base.removeBinding(this.ref);
   }
 
   addFormValues(formValue) {
@@ -25,13 +38,13 @@ class App extends Component {
 
   render() {
     return (
-      <div className="container-fluid" id="container">
+      <div id="container">
         <h3>Welcome!</h3>
         <div id="loading">Loading...</div>
         <div id="loaded" className="hidden">
-          <div id="main">
+          <div className="container-fluid" id="main">
             <Login />
-            <AdminPanel addFormValues={this.addFormValues} />
+            <AdminPanel addFormValues={this.addFormValues} formValues={this.state.formValues} />
           </div>
         </div>
       </div>
