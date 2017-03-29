@@ -23,6 +23,12 @@ body {
   display: none;
 }
 
+.login button {
+  display:block;
+  margin:0 auto 10px;
+  text-align:center;
+}
+
 #user-info {
   border: 1px solid #CCC;
   clear: both;
