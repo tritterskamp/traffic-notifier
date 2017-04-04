@@ -56,16 +56,25 @@ class Login extends Component {
           uid: authData.user.uid
         });
       }
-
-      this.setState({
-        uid: data.owner || authData.user.uid,
-        displayName: authData.user.displayName,
-        email: authData.user.email,
-        photoURL: authData.user.photoURL,
-      })
-
     });
+
+    // I think the displayName, email, and photoUrl should be props instead of state maybe?
+    this.setState({
+      uid: authData.user.uid,
+      displayName: authData.user.displayName,
+      email: authData.user.email,
+      photoURL: authData.user.photoURL,
+    })
+
   }
+
+  // writeUserData(userId, name, email, imageUrl) {
+  //   firebase.database().ref('users/' + userId).set({
+  //     username: name,
+  //     email: email,
+  //     profile_picture : imageUrl
+  //   });
+  // }
 
   renderLogin() {
     return (
@@ -88,6 +97,7 @@ class Login extends Component {
     return (
       <div className="row">
         <div className="col-md-12">
+          <h3>Welcome!</h3>
           <div id="user-signed-in" className="hidden">
             <div id="user-info" className="clearfix">
               <div id="photo-container">
