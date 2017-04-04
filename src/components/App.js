@@ -10,7 +10,8 @@ class App extends Component {
     this.addFormValues = this.addFormValues.bind(this);
     // getinitialstate
     this.state = {
-      formValues: {}
+      formValues: {},
+      isLoggedIn: false
     };
   }
 
@@ -39,13 +40,9 @@ class App extends Component {
   render() {
     return (
       <div id="container">
-        <h3>Welcome!</h3>
-        <div id="loading">Loading...</div>
-        <div id="loaded" className="hidden">
-          <div className="container-fluid" id="main">
-            <Login />
-            <AdminPanel addFormValues={this.addFormValues} formValues={this.state.formValues} />
-          </div>
+        <div className="container-fluid" id="main">
+          <Login />
+          <AdminPanel addFormValues={this.addFormValues} formValues={this.state.formValues} />
         </div>
       </div>
 
