@@ -4,11 +4,13 @@ import base from '../base';
 class Login extends Component {
   constructor() {
     super();
+    this.writeUserData = this.writeUserData.bind(this);
     this.authenticate = this.authenticate.bind(this);
     this.logout = this.logout.bind(this);
     this.authHandler = this.authHandler.bind(this);
     this.renderLogin = this.renderLogin.bind(this);
     this.state = {
+      uid: null,
       displayName: null,
       email: null,
       photoURL: null
@@ -23,6 +25,14 @@ class Login extends Component {
     })
   }
 
+  writeUserData(userId, name, email, imageUrl) {
+    base.database().ref(`users/${userId}`).set({
+      username: name,
+      email: email,
+      profile_picture : imageUrl
+    });
+  }
+
   authenticate(provider) {
     console.log(`Trying to login with ${provider}`);
     base.authWithOAuthPopup(provider, this.authHandler);
@@ -31,7 +41,8 @@ class Login extends Component {
   logout() {
     base.unauth();
     this.setState({
-      uid: null
+      uid: null,
+      isLoggedIn: false
     })
   }
 
@@ -43,38 +54,28 @@ class Login extends Component {
     }
 
     // grab info
-    const storeRef = base.database().ref(`form`);
+    const storeRef = base.database().ref(`users`);
 
     // query the firebase once for store data
     storeRef.once('value', (snapshot) => {
       const data = snapshot.val() || {};
       console.log(data);
 
-      // claim it as our own if there is no owner already -- I'm not sure if this is actually needed for this purpose, will assess later
+      // write the user info to the database
       if(!data.uid) {
-        storeRef.set({
-          uid: authData.user.uid
-        });
+        this.writeUserData(authData.user.uid, authData.user.displayName, authData.user.email, authData.user.photoURL)
       }
+      // I think the displayName, email, and photoUrl should be props instead of state maybe?
+      this.setState({
+        isLoggedIn: true,
+        uid: authData.user.uid,
+        displayName: authData.user.displayName,
+        email: authData.user.email,
+        photoURL: authData.user.photoURL,
+      });
     });
 
-    // I think the displayName, email, and photoUrl should be props instead of state maybe?
-    this.setState({
-      uid: authData.user.uid,
-      displayName: authData.user.displayName,
-      email: authData.user.email,
-      photoURL: authData.user.photoURL,
-    })
-
   }
-
-  // writeUserData(userId, name, email, imageUrl) {
-  //   firebase.database().ref('users/' + userId).set({
-  //     username: name,
-  //     email: email,
-  //     profile_picture : imageUrl
-  //   });
-  // }
 
   renderLogin() {
     return (
