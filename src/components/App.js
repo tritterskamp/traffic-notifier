@@ -41,7 +41,7 @@ class App extends Component {
     return (
       <div id="container">
         <div className="container-fluid" id="main">
-          <Login />
+          <Login isLoggedIn={this.state.isLoggedIn} />
           <AdminPanel addFormValues={this.addFormValues} formValues={this.state.formValues} />
         </div>
       </div>
