@@ -1,20 +1,19 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, IndexRoute } from 'react-router-dom';
 
-import Login from './components/Login';
 import App from './components/App';
+import AdminPanel from './components/AdminPanel';
 import Form from './components/Form';
 import Results from './components/Results';
 
 render(
   <Router>
-    <div id="container">
-      <Route path="/" component={Login} />
-      <Route path="/admin" component={App} />
-      <Route path="/new" component={Form} />
-      <Route path="/saved" component={Results} />
-    </div>
+    <Route path="/" component={App}>
+        <IndexRoute component={AdminPanel} />
+        <Route path="/new" component={Form} />
+        <Route path="/saved" component={Results} />
+    </Route>
   </Router>,
   document.getElementById('root')
 );
