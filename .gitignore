@@ -6,3 +6,6 @@
 .idea
 .DS_Store
 node_modules
+
+src/base.js
+public/config.js
