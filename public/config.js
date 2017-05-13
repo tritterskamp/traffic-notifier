@@ -12,11 +12,11 @@
  * limitations under the License.
  */
 
-var config = {
-    apiKey: "AIzaSyBiq9RIvYOMKbZqBW46HmuSNfnEgpM1qxI",
-    authDomain: "my-quickstart-67bc9.firebaseapp.com",
-    databaseURL: "https://my-quickstart-67bc9.firebaseio.com",
-    storageBucket: "my-quickstart-67bc9.appspot.com",
-    messagingSenderId: "995129079149"
-};
+ var config = {
+     apiKey: "<API_KEY>",
+     authDomain: "<PROJECT_ID>.firebaseapp.com",
+     databaseURL: "https://<DATABASE_NAME>.firebaseio.com",
+     storageBucket: "<BUCKET>.appspot.com",
+     messagingSenderId: "<SENDER_ID>",
+   };
 firebase.initializeApp(config);
