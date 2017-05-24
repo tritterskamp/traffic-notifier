@@ -42,8 +42,8 @@ class AdminPanel extends Component {
         <div id="admin-panel" className="hidden">
           <button className="btn btn-default">Create a New Route</button>
           <button className="btn btn-default">View My Saved Routes</button>
-          <Form addFormValues={this.props.addFormValues} />
-          <Results formValues={this.props.formValues} />
+          <Form addFormValues={this.addFormValues} />
+          <Results formValues={this.formValues} />
         </div>
       </div>
     )

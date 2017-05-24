@@ -3,7 +3,6 @@ import { render } from 'react-dom';
 import { BrowserRouter, Route } from 'react-router-dom';
 
 import App from './components/App';
-import AdminPanel from './components/AdminPanel';
 import Form from './components/Form';
 import Results from './components/Results';
 

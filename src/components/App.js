@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import Login from './Login';
+//import AdminPanel from './AdminPanel';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     return (
@@ -16,7 +14,6 @@ class App extends Component {
           {this.props.children}
         </div>
       </div>
-
     )
   }
 }
