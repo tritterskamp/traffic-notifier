@@ -7,7 +7,7 @@ class Form extends Component {
       startAddress: this.startAddress.value,
       endAddress: this.endAddress.value
     }
-    this.props.addFormValues(formValues);
+    this.addFormValues(formValues);
     this.addressForm.reset();
   }
 
