@@ -45,8 +45,8 @@ class Main extends Component {
 
     return (
       <div className="container-fluid">
+        <AdminPanel />
         <Switch>
-          <Route exact path="/" component={AdminPanel} />
           <Route path="/new" render={() => renderForm} />
           <Route path="/saved" render={() => renderResults} />
         </Switch>

@@ -13,7 +13,7 @@ class Login extends Component {
       uid: null,
       displayName: null,
       email: null,
-      photoURL: null
+      photoURL: null,
     }
   }
 
@@ -34,7 +34,6 @@ class Login extends Component {
   }
 
   authenticate(provider) {
-    console.log(`Trying to login with ${provider}`);
     base.authWithOAuthPopup(provider, this.authHandler);
   }
 
@@ -47,7 +46,6 @@ class Login extends Component {
   }
 
   authHandler(err, authData) {
-    console.log(authData);
     if (err) {
       console.error(err);
       return;
@@ -59,7 +57,6 @@ class Login extends Component {
     // query the firebase once for store data
     storeRef.once('value', (snapshot) => {
       const data = snapshot.val() || {};
-      console.log(data);
 
       // write the user info to the database
       if(!data.uid) {
