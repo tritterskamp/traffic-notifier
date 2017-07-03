@@ -19,7 +19,7 @@ class Main extends Component {
 
   componentWillMount() {
     //this.ref = base.syncState(`${this.props.params.storeIf}/fishes`, {
-    this.ref = base.syncState(`form`, {
+    this.ref = base.syncState(`user-routes/${this.props.uid}`, {
       context: this,
       state: 'formValues'
     });
@@ -34,7 +34,7 @@ class Main extends Component {
     const formValues = {...this.state.formValues};
     // add in new formValue
     const timestamp = Date.now();
-    formValues[`formValue-${timestamp}`] = formValue;
+    formValues[`route-${timestamp}`] = formValue;
     // set state
     this.setState({formValues: formValues})
   }

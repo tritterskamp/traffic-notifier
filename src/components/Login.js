@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import base from '../base';
+import Main from './Main';
 
 class Login extends Component {
   constructor() {
@@ -76,10 +77,12 @@ class Login extends Component {
 
   renderLogin() {
     return (
-      <div id="user-signed-out" className="login">
-        <h4>Please sign in.</h4>
-        <button className="btn btn-success google" onClick={() => this.authenticate('google')}>Sign in with Google</button>
-        <button className="btn btn-primary facebook" onClick={() => this.authenticate('facebook')}>Sign in with Facebook</button>
+      <div className="container-fluid">
+        <div id="user-signed-out" className="login">
+          <h4>Please sign in.</h4>
+          <button className="btn btn-success google" onClick={() => this.authenticate('google')}>Sign in with Google</button>
+          <button className="btn btn-primary facebook" onClick={() => this.authenticate('facebook')}>Sign in with Facebook</button>
+        </div>
       </div>
     )
   }
@@ -93,23 +96,26 @@ class Login extends Component {
     }
 
     return (
-      <div className="row">
-        <div className="col-md-12">
-          <h3>Welcome!</h3>
-          <div id="user-signed-in" className="hidden">
-            <div id="user-info" className="clearfix">
-              <div id="photo-container">
-                <img id="photo" src={this.state.photoURL} alt={this.state.displayName} />
+      <div>
+        <div className="row">
+          <div className="col-md-12">
+            <h3>Welcome!</h3>
+            <div id="user-signed-in" className="hidden">
+              <div id="user-info" className="clearfix">
+                <div id="photo-container">
+                  <img id="photo" src={this.state.photoURL} alt={this.state.displayName} />
+                </div>
+                <div id="name">{this.state.displayName}</div>
+                <div id="email">{this.state.email}</div>
               </div>
-              <div id="name">{this.state.displayName}</div>
-              <div id="email">{this.state.email}</div>
+              <p>
+                {logout}
+                <button className="btn btn-default" id="delete-account">Delete account</button>
+              </p>
             </div>
-            <p>
-              {logout}
-              <button className="btn btn-default" id="delete-account">Delete account</button>
-            </p>
           </div>
         </div>
+        <Main uid={this.state.uid} />
       </div>
     )
   }

@@ -7,8 +7,9 @@ class Form extends Component {
       startAddress: this.startAddress.value,
       endAddress: this.endAddress.value
     }
-    this.addFormValues(formValues);
+    this.props.addFormValues(formValues);
     this.addressForm.reset();
+    alert("Your route has been saved!");
   }
 
   render() {
