@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
+import firebase from 'firebase';
 import base from '../base';
 import Main from './Main';
+
+var baseApp = base.initializedApp;
 
 class Login extends Component {
   constructor() {
@@ -19,43 +22,52 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    base.onAuth((user) => {
+    baseApp.auth().onAuthStateChanged(function(user, error) {
       if (user) {
-        this.authHandler(null, { user });
+        return this.authHandler({user});
       }
+      console.log(error);
     })
   }
 
   writeUserData(userId, name, email, imageUrl) {
-    base.database().ref(`users/${userId}`).set({
+    baseApp.database().ref(`users/${userId}`).set({
       username: name,
       email: email,
       profile_picture : imageUrl
     });
   }
 
+  // authenticate(provider) {
+  //   base.authWithOAuthPopup(provider, this.authHandler);
+  // }
+
   authenticate(provider) {
-    base.authWithOAuthPopup(provider, this.authHandler);
+    baseApp.auth().signInWithPopup(provider)
+      .then(this.authHandler)
+      .catch(function(error){
+      console.log(error);
+    });
   }
 
   logout() {
-    base.unauth();
+    //base.unauth();
+    baseApp.auth().signOut().then(function() {
+      // Sign-out successful.
+    }, function(error) {
+	     console.log(error);
+    });
     this.setState({
       uid: null,
       isLoggedIn: false
     })
   }
 
-  authHandler(err, authData) {
-    if (err) {
-      console.error(err);
-      return;
-    }
+  authHandler(authData) {
+    // grab user info
+    const storeRef = baseApp.database().ref(`users`);
 
-    // grab info
-    const storeRef = base.database().ref(`users`);
-
-    // query the firebase once for store data
+    // query the firebase once for user data
     storeRef.once('value', (snapshot) => {
       const data = snapshot.val() || {};
 
@@ -76,12 +88,14 @@ class Login extends Component {
   }
 
   renderLogin() {
+    const google = new firebase.auth.GoogleAuthProvider();
+    const facebook = new firebase.auth.FacebookAuthProvider();
     return (
       <div className="container-fluid">
         <div id="user-signed-out" className="login">
           <h4>Please sign in.</h4>
-          <button className="btn btn-success google" onClick={() => this.authenticate('google')}>Sign in with Google</button>
-          <button className="btn btn-primary facebook" onClick={() => this.authenticate('facebook')}>Sign in with Facebook</button>
+          <button className="btn btn-success google" onClick={() => this.authenticate(google)}>Sign in with Google</button>
+          <button className="btn btn-primary facebook" onClick={() => this.authenticate(facebook)}>Sign in with Facebook</button>
         </div>
       </div>
     )
