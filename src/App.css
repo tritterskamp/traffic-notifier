@@ -1,0 +1,14 @@
+section {
+  padding-bottom:20px;
+}
+.display-routes li {
+  padding:10px;
+  border:1px solid #ddd;
+  border-top:none;
+}
+.display-routes li:first-child {
+  border-top:1px solid #ddd;
+}
+.display-routes li:nth-child(odd) {
+  background-color:#f9f9f9;
+}
