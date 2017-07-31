@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import firebase from '../firebase.js';
 
-class DisplayRoutes extends Component {
+class SavedRoutes extends Component {
   constructor() {
     super();
     // Set initial states for this component
@@ -43,7 +43,7 @@ class DisplayRoutes extends Component {
 
   render () {
     return (
-      <section className="display-routes col-md-12">
+      <section className="saved-routes col-md-12">
         <div className="wrapper">
           <h2>Saved Routes</h2>
           <ul className="list-unstyled">
@@ -67,4 +67,4 @@ class DisplayRoutes extends Component {
   }
 }
 
-export default DisplayRoutes;
+export default SavedRoutes;
