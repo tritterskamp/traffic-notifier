@@ -6,13 +6,12 @@ import './App.css';
 import Navigation from './components/navigation';
 import AddRoute from './components/add-route';
 import SavedRoutes from './components/saved-routes';
-import DisplayMap from './components/display-map';
+//import DisplayMap from './components/display-map';
 
 
 class App extends Component {
   render() {
-    return (
-      <div className="App">
+    return <div className="App">
         <Navigation />
         <div className="container">
           <div className="row clearfix">
@@ -21,12 +20,9 @@ class App extends Component {
           <div className="row clearfix">
             <SavedRoutes />
           </div>
-          <div className="row clearfix">
-            <DisplayMap />
-          </div>
+          <div className="row clearfix" />
         </div>
-      </div>
-    );
+      </div>;
   }
 }
 
