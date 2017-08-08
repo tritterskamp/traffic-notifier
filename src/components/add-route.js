@@ -1,12 +1,10 @@
 // Dependencies:
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import firebase from '../firebase.js';
 import PropTypes from "prop-types";
+import firebase from '../firebase.js';
+import ReactDatetime from 'react-datetime';
 import { GoogleApiWrapper } from 'google-maps-react'
-
-// Components [this may change, but importing it here for now]: 
-//import DisplayMap from "../components/display-map.js";
 
 class AddRoute extends Component {
   constructor(props) {
@@ -25,7 +23,7 @@ class AddRoute extends Component {
     this.loadMap = this.loadMap.bind(this);
     this.recenterMap = this.recenterMap.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);    
+    this.handleSubmit = this.handleSubmit.bind(this);        
     //this.renderAutoComplete = this.renderAutoComplete.bind(this);
     this.AutocompleteDirectionsHandler = this.AutocompleteDirectionsHandler.bind(this);
     this.setupClickListener = this.setupClickListener.bind(this);
@@ -196,6 +194,7 @@ class AddRoute extends Component {
       this.setupClickListener('changemode-walking', 'WALKING');
       this.setupClickListener('changemode-transit', 'TRANSIT');
       this.setupClickListener('changemode-driving', 'DRIVING');
+      this.setupClickListener('changemode-bicycling', 'BICYCLING');
 
       this.setupPlaceChangedListener(originAutocomplete, 'ORIG');
       this.setupPlaceChangedListener(destinationAutocomplete, 'DEST');      
@@ -246,7 +245,11 @@ class AddRoute extends Component {
       origin: {'placeId': this.originPlaceId},
       destination: {'placeId': this.destinationPlaceId},
       travelMode: this.travelMode,
-      provideRouteAlternatives: true
+      provideRouteAlternatives: true,
+      drivingOptions: {
+        departureTime: new Date(Date.now()),
+        trafficModel: 'bestguess'
+      }
     }, function(response, status) {
       if (status === 'OK') {
         me.directionsDisplay.setDirections(response);
@@ -296,6 +299,20 @@ class AddRoute extends Component {
                 <input type="radio" name="type" id="changemode-walking" />
                 Walking
               </label>
+              <label className="radio-inline" htmlFor="changemode-bicycling">
+                <input type="radio" name="type" id="changemode-bicycling" />
+                Bicycling
+              </label>
+            </div>
+            <div className="form-group">
+            <p className="help-block">What time do you want to leave?</p>
+            {/* <Datetime dateFormat={false} /> */}
+            <div className="input-group date" id="datetimepicker" ref="datetimepicker">
+                <input type="text" className="form-control" />
+                <span className="input-group-addon">
+                <span className="glyphicon glyphicon-time"></span>
+                </span>
+              </div>
             </div>
             <button className="btn btn-default">Save Route</button>
           </form>
