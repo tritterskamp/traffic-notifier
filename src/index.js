@@ -11,14 +11,14 @@ const dummyRoutes = [
     startLocation: '2861 Salena St. St. Louis, MO 63118',
     endLocation: '8300 Maryland Ave. Clayton, MO 63105',
     departureTime: '8:30 AM',
-    mode: 'DRIVING',
+    travelMode: 'DRIVING',
   },
   {
     id: 2,
     startLocation: '5223 Sutherland Ave. St. Louis, MO 63109',
     endLocation: '2861 Salena St. St. Louis, MO 63118',
     departureTime: '5:01 PM',
-    mode: 'DRIVING',
+    travelMode: 'DRIVING',
   },
 ];
 

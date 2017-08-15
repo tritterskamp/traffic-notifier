@@ -54,7 +54,7 @@ class SavedRoutes extends Component {
                 startLocation={route.startLocation}
                 endLocation={route.endLocation}
                 departureTime={route.departureTime}
-                travelMode={route.mode}
+                travelMode={route.travelMode}
               />),
             )}
           </ul>

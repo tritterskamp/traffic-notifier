@@ -11,32 +11,38 @@ class App extends Component {
     super(props);
     // Set initial states for top-down data flow
     this.state = {
-      startLocation: '',
-      endLocation: '',
-      departureTime: '',
-      travelMode: '',
+      routes: {},
     };
     // Binding methods
-    this.handleStartLocationInput = this.handleStartLocationInput.bind(this);
-    this.handleEndLocationInput = this.handleEndLocationInput.bind(this);
-    this.handleDepartureTimeInput = this.handleDepartureTimeInput.bind(this);
+    this.addRoute = this.addRoute.bind(this);
   }
 
-  handleStartLocationInput(inputText) {
-    this.setState({
-      startLocation: inputText,
-    });
+  // This gets passed down to AddRoute component and is called when the form is filled out there
+  addRoute(route) {
+    // update our state - make a copy first, this is best practice:
+    const routes = {...this.state.routes};
+    // add in our new fish
+    const timestamp = Date.now();
+    routes[`route-${timestamp}`] = route;
+    // set state
+    this.setState({ routes });
   }
-  handleEndLocationInput(inputText) {
-    this.setState({
-      endLocation: inputText,
-    });
-  }
-  handleDepartureTimeInput(inputText) {
-    this.setState({
-      departureTime: inputText,
-    });
-  }
+
+  // handleStartLocationInput(inputText) {
+  //   this.setState({
+  //     startLocation: inputText,
+  //   });
+  // }
+  // handleEndLocationInput(inputText) {
+  //   this.setState({
+  //     endLocation: inputText,
+  //   });
+  // }
+  // handleDepartureTimeInput(inputText) {
+  //   this.setState({
+  //     departureTime: inputText,
+  //   });
+  // }
 
   render() {
     return (
@@ -46,13 +52,8 @@ class App extends Component {
           <div className="row clearfix">
             <AddRoute
               google={this.props.google}
-              startLocation={this.state.startLocation}
-              endLocation={this.state.endLocation}
-              departureTime={this.state.departureTime}
-              travelMode={this.state.travelMode}
-              onStartLocationInput={this.handleStartLocationInput}
-              onEndLocationInput={this.handleEndLocationInput}
-              onDepartureTimeInput={this.handleDepartureTimeInput}
+              routes={this.state.routes}
+              addRoute={this.addRoute}
             />
           </div>
           <div className="row clearfix">
