@@ -13,20 +13,20 @@ class AddRoute extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.AutocompleteDirectionsHandler = this.AutocompleteDirectionsHandler.bind(this);
     this.setupClickListener = this.setupClickListener.bind(this);
-    this.setupPlaceChangedListener = this.setupPlaceChangedListener.bind(this);    
+    this.setupPlaceChangedListener = this.setupPlaceChangedListener.bind(this);
     this.route = this.route.bind(this);
   }
 
   // Lifecycle methods:
   componentDidMount() {
-    //this.loadMap();
+    // this.loadMap();
     // this.AutocompleteDirectionsHandler();
   }
 
   componentDidUpdate(prevProps, prevState) {
     // check if google api is available before trying to load map
     if (prevProps.google !== this.props.google) {
-      //this.loadMap();
+      // this.loadMap();
       // this.AutocompleteDirectionsHandler();
     }
   }
@@ -175,12 +175,11 @@ class AddRoute extends Component {
   // }
   createRoute(event) {
     event.preventDefault();
-    console.log(`let's save a new route!`);
     const route = {
       startLocation: this.startLocation.value,
       endLocation: this.endLocation.value,
-      travelMode: this.travelMode.value, 
-      departureTime: this.departureTime.value, // this may need to be something different
+      travelMode: this.travelMode.value,
+      departureTime: this.dateTime.state.inputValue, // this may need to be something different
     };
     this.props.addRoute(route);
     console.log(route);
@@ -200,7 +199,7 @@ class AddRoute extends Component {
       <div>
         <section className="add-route col-md-12">
           <h2>Add a route</h2>
-          <form ref={(input) => this.addRouteForm = input} onSubmit={(e) => this.createRoute(e)}>
+          <form ref={input => (this.addRouteForm = input)} onSubmit={e => this.createRoute(e)}>
             <div className="form-group">
               <label htmlFor="startLocation">What is your starting location?</label>
               <input
@@ -208,7 +207,7 @@ class AddRoute extends Component {
                 className="form-control"
                 name="startLocation"
                 placeholder="Start Address"
-                ref={(input) => this.startLocation = input}                
+                ref={input => (this.startLocation = input)}
               />
             </div>
             <div className="form-group">
@@ -218,10 +217,10 @@ class AddRoute extends Component {
                 className="form-control"
                 name="endLocation"
                 placeholder="End Address"
-                ref={(input) => this.endLocation = input}               
+                ref={input => (this.endLocation = input)}
               />
             </div>
-            <div className="form-group" id="mode-selector" ref={(input) => this.travelMode = input}>
+            <div className="form-group" id="mode-selector" ref={input => (this.travelMode = input)}>
               <p className="help-block">Choose a mode of transportation:</p>
               <label className="radio-inline" htmlFor="changemode-driving">
                 <input type="radio" name="type" id="changemode-driving" defaultChecked="checked" />
@@ -244,8 +243,9 @@ class AddRoute extends Component {
               <p className="help-block">What time do you want to leave?</p>
               <Datetime
                 className="input-group date"
-                ref={(input) => this.departureTime = input}
+                ref={dateTime => (this.dateTime = dateTime)}
                 dateFormat={false}
+                onChange={() => console.log(this.dateTime.state.inputValue)}
               />
               {/* <div className="input-group date" id="datetimepicker" ref="datetimepicker">
                 <input type="text" className="form-control" />
@@ -274,7 +274,7 @@ class AddRoute extends Component {
 }
 
 AddRoute.propTypes = {
-  addRoute: PropTypes.func.isRequired
-}
+  addRoute: PropTypes.func.isRequired,
+};
 
 export default AddRoute;
