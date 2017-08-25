@@ -37,6 +37,8 @@ section {
 }
 .rdtOpen .rdtPicker {
   display: block;
+  top: 33px;
+  left: 0;
 }
 .rdtStatic .rdtPicker {
   box-shadow: none;

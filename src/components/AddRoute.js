@@ -8,17 +8,24 @@ import firebase from '../firebase';
 class AddRoute extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      travelMode: 'DRIVING',
+    };
     // Binding methods
     this.loadMap = this.loadMap.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
     this.AutocompleteDirectionsHandler = this.AutocompleteDirectionsHandler.bind(this);
     this.setupClickListener = this.setupClickListener.bind(this);
     this.setupPlaceChangedListener = this.setupPlaceChangedListener.bind(this);
+    // Form related:
+    this.modifyDateTime = this.modifyDateTime.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
     this.route = this.route.bind(this);
   }
 
   // Lifecycle methods:
   componentDidMount() {
+    this.modifyDateTime();
     // this.loadMap();
     // this.AutocompleteDirectionsHandler();
   }
@@ -163,23 +170,27 @@ class AddRoute extends Component {
     );
   }
 
-  // handleStartLocationChange(e) {
-  //   this.props.onStartLocationInput(e.target.value);
-  // }
-  // handleEndLocationChange(e) {
-  //   this.props.onEndLocationInput(e.target.value);
-  // }
-  // handleDepartureTimeChange(e) {
-  //   this.props.onDepartureTimeInput(e.target.value);
-  //   console.log(e);
-  // }
+  // Purely aestetic: adds Bootstrap styled span tags after dateTime inpout
+  modifyDateTime() {
+    const dateTimeInput = document.getElementById('dateTimeInput');
+    const span = '<span class="input-group-addon"><span class="glyphicon glyphicon-time" /></span>';
+    dateTimeInput.insertAdjacentHTML('afterend', span);
+  }
+
+  handleInputChange(event) {
+    const target = event.target;
+    this.setState({
+      [target.name]: target.value,
+    });
+  }
+
   createRoute(event) {
     event.preventDefault();
     const route = {
       startLocation: this.startLocation.value,
       endLocation: this.endLocation.value,
-      travelMode: this.travelMode.value,
-      departureTime: this.dateTime.state.inputValue, // this may need to be something different
+      travelMode: this.state.travelMode,
+      departureTime: this.dateTime.state.inputValue,
     };
     this.props.addRoute(route);
     console.log(route);
@@ -220,22 +231,28 @@ class AddRoute extends Component {
                 ref={input => (this.endLocation = input)}
               />
             </div>
-            <div className="form-group" id="mode-selector" ref={input => (this.travelMode = input)}>
+            <div className="form-group" id="mode-selector" onChange={this.handleInputChange}>
               <p className="help-block">Choose a mode of transportation:</p>
               <label className="radio-inline" htmlFor="changemode-driving">
-                <input type="radio" name="type" id="changemode-driving" defaultChecked="checked" />
+                <input
+                  type="radio"
+                  name="travelMode"
+                  value="DRIVING"
+                  id="changemode-driving"
+                  defaultChecked
+                />
                 Driving
               </label>
               <label className="radio-inline" htmlFor="changemode-transit">
-                <input type="radio" name="type" id="changemode-transit" />
+                <input type="radio" name="travelMode" value="TRANSIT" id="changemode-transit" />
                 Transit
               </label>
               <label className="radio-inline" htmlFor="changemode-walking">
-                <input type="radio" name="type" id="changemode-walking" />
+                <input type="radio" name="travelMode" value="WALKING" id="changemode-walking" />
                 Walking
               </label>
               <label className="radio-inline" htmlFor="changemode-bicycling">
-                <input type="radio" name="type" id="changemode-bicycling" />
+                <input type="radio" name="travelMode" value="BICYCLING" id="changemode-bicycling" />
                 Bicycling
               </label>
             </div>
@@ -245,7 +262,7 @@ class AddRoute extends Component {
                 className="input-group date"
                 ref={dateTime => (this.dateTime = dateTime)}
                 dateFormat={false}
-                onChange={() => console.log(this.dateTime.state.inputValue)}
+                inputProps={{ id: 'dateTimeInput' }}
               />
               {/* <div className="input-group date" id="datetimepicker" ref="datetimepicker">
                 <input type="text" className="form-control" />
