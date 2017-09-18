@@ -12,27 +12,30 @@ class AddRoute extends Component {
       travelMode: 'DRIVING',
     };
     // Binding methods
-    this.loadMap = this.loadMap.bind(this);
-    this.AutocompleteDirectionsHandler = this.AutocompleteDirectionsHandler.bind(this);
-    this.setupClickListener = this.setupClickListener.bind(this);
+    //this.loadMap = this.loadMap.bind(this);
+    // this.AutocompleteDirectionsHandler = this.AutocompleteDirectionsHandler.bind(this);
+    // this.setupClickListener = this.setupClickListener.bind(this);
+    this.initAutoComplete = this.initAutoComplete.bind(this);
     this.setupPlaceChangedListener = this.setupPlaceChangedListener.bind(this);
     // Form related:
     this.modifyDateTime = this.modifyDateTime.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
-    this.route = this.route.bind(this);
+    // this.route = this.route.bind(this);
   }
 
   // Lifecycle methods:
   componentDidMount() {
+    this.initAutoComplete();
     this.modifyDateTime();
     // this.loadMap();
     // this.AutocompleteDirectionsHandler();
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // check if google api is available before trying to load map
+    // check if google api is available
     if (prevProps.google !== this.props.google) {
+      this.initAutoComplete();
       // this.loadMap();
       // this.AutocompleteDirectionsHandler();
     }
@@ -52,122 +55,6 @@ class AddRoute extends Component {
     };
     // Push those values to Firebase
     routesRef.push(route);
-    // Clear out the input states
-    // this.setState({
-    //   startLocation: "",
-    //   endLocation: ""
-    // });
-  }
-
-  // Interacting with Google Maps API:
-  loadMap() {
-    // check if google api is available before trying to load map
-    if (this.props && this.props.google) {
-      const { google } = this.props;
-      const maps = google.maps;
-
-      // grab reference to the dom
-      const mapRef = this.refs.map;
-      const node = ReactDOM.findDOMNode(mapRef);
-      // setting some initial map configs:
-      const mapConfig = Object.assign({});
-      // instantiate this map
-      const map = new maps.Map(node, mapConfig);
-
-      this.AutocompleteDirectionsHandler(map);
-    }
-  }
-
-  AutocompleteDirectionsHandler(map) {
-    // check if google api is available before trying to load map
-    if (this.props && this.props.google) {
-      const { google } = this.props;
-      const maps = google.maps;
-
-      this.map = map;
-      this.originPlaceId = null;
-      this.destinationPlaceId = null;
-      this.travelMode = 'DRIVING';
-      this.departureTime = new Date(Date.now());
-
-      const originInput = this.refs.startLocation;
-      const destinationInput = this.refs.endLocation;
-
-      this.directionsService = new maps.DirectionsService();
-      this.directionsDisplay = new maps.DirectionsRenderer();
-      this.directionsDisplay.setMap(map);
-
-      const originAutocomplete = new maps.places.Autocomplete(originInput);
-      const destinationAutocomplete = new maps.places.Autocomplete(destinationInput);
-
-      this.setupClickListener('changemode-walking', 'WALKING');
-      this.setupClickListener('changemode-transit', 'TRANSIT');
-      this.setupClickListener('changemode-driving', 'DRIVING');
-      this.setupClickListener('changemode-bicycling', 'BICYCLING');
-
-      this.setupPlaceChangedListener(originAutocomplete, 'ORIG');
-      this.setupPlaceChangedListener(destinationAutocomplete, 'DEST');
-    }
-  }
-
-  // Sets a listener on a radio button to change the filter type on Places
-  // Autocomplete.
-  setupClickListener(id, mode) {
-    const radioButton = document.getElementById(id);
-    const me = this;
-    radioButton.addEventListener('click', () => {
-      me.travelMode = mode;
-      me.route();
-    });
-  }
-
-  setupPlaceChangedListener(autocomplete, mode) {
-    const me = this;
-    autocomplete.bindTo('bounds', this.map);
-    autocomplete.addListener('place_changed', () => {
-      const place = autocomplete.getPlace();
-      if (!place.place_id) {
-        window.alert('Please select an option from the dropdown list.');
-        return;
-      }
-      if (mode === 'ORIG') {
-        me.originPlaceId = place.place_id;
-        me.setState({ startLocation: place.formatted_address });
-      } else {
-        me.destinationPlaceId = place.place_id;
-        me.setState({ endLocation: place.formatted_address });
-      }
-      me.route();
-    });
-  }
-
-  route() {
-    if (!this.originPlaceId || !this.destinationPlaceId) {
-      return;
-    }
-    const me = this;
-    const directionsPanel = me.refs.directionsPanel;
-
-    this.directionsService.route(
-      {
-        origin: { placeId: this.originPlaceId },
-        destination: { placeId: this.destinationPlaceId },
-        travelMode: this.travelMode,
-        provideRouteAlternatives: true,
-        drivingOptions: {
-          departureTime: this.departureTime,
-          trafficModel: 'bestguess',
-        },
-      },
-      (response, status) => {
-        if (status === 'OK') {
-          me.directionsDisplay.setDirections(response);
-          me.directionsDisplay.setPanel(directionsPanel);
-        } else {
-          window.alert(`Directions request failed due to ${status}`);
-        }
-      },
-    );
   }
 
   // Purely aestetic: adds Bootstrap styled span tags after dateTime inpout
@@ -187,25 +74,162 @@ class AddRoute extends Component {
   createRoute(event) {
     event.preventDefault();
     const route = {
-      startLocation: this.startLocation.value,
-      endLocation: this.endLocation.value,
+      startLocation: this.state.startLocation,
+      endLocation: this.state.endLocation,
       travelMode: this.state.travelMode,
       departureTime: this.dateTime.state.inputValue,
     };
     this.props.addRoute(route);
-    console.log(route);
     this.addRouteForm.reset();
   }
 
-  render() {
-    // wrapper div styles
-    const style = {
-      width: '100%',
-      height: '500px',
-      position: 'relative',
-      overflow: 'auto',
-    };
 
+   // Interacting with Google Maps API:
+  initAutoComplete() {
+    // check if google api is available before trying to load map
+    if (this.props && this.props.google) {
+      const { google } = this.props;
+      const maps = google.maps;
+      const originInput = this.refs.startLocation;
+      const destinationInput = this.refs.endLocation;
+      const originAutocomplete = new maps.places.Autocomplete(originInput);
+      const destinationAutocomplete = new maps.places.Autocomplete(destinationInput);
+      this.setupPlaceChangedListener(originAutocomplete, 'ORIG');
+      this.setupPlaceChangedListener(destinationAutocomplete, 'DEST');
+    }
+  }
+
+  setupPlaceChangedListener(autocomplete, mode) {
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace();
+      if (!place.place_id) {
+        window.alert('Please select an option from the dropdown list.');
+        return;
+      }
+      if (mode === 'ORIG') {
+        this.originPlaceId = place.place_id;
+        this.setState({ startLocation: place.formatted_address });
+      } else {
+        this.destinationPlaceId = place.place_id;
+        this.setState({ endLocation: place.formatted_address });
+      }
+    });
+  }
+
+
+  // loadMap() {
+  //   // check if google api is available before trying to load map
+  //   if (this.props && this.props.google) {
+  //     const { google } = this.props;
+  //     const maps = google.maps;
+
+  //     // grab reference to the dom
+  //     const mapRef = this.refs.map;
+  //     const node = ReactDOM.findDOMNode(mapRef);
+  //     // setting some initial map configs:
+  //     const mapConfig = Object.assign({});
+  //     // instantiate this map
+  //     const map = new maps.Map(node, mapConfig);
+
+  //     this.AutocompleteDirectionsHandler(map);
+  //   }
+  // }
+
+  // AutocompleteDirectionsHandler(map) {
+    // check if google api is available before trying to load map
+  //   if (this.props && this.props.google) {
+  //     const { google } = this.props;
+  //     const maps = google.maps;
+
+  //     this.map = map;
+  //     this.originPlaceId = null;
+  //     this.destinationPlaceId = null;
+  //     this.travelMode = 'DRIVING';
+  //     this.departureTime = new Date(Date.now());
+
+  //     const originInput = this.refs.startLocation;
+  //     const destinationInput = this.refs.endLocation;
+
+  //     this.directionsService = new maps.DirectionsService();
+  //     this.directionsDisplay = new maps.DirectionsRenderer();
+  //     this.directionsDisplay.setMap(map);
+
+  //     const originAutocomplete = new maps.places.Autocomplete(originInput);
+  //     const destinationAutocomplete = new maps.places.Autocomplete(destinationInput);
+
+  //     this.setupClickListener('changemode-walking', 'WALKING');
+  //     this.setupClickListener('changemode-transit', 'TRANSIT');
+  //     this.setupClickListener('changemode-driving', 'DRIVING');
+  //     this.setupClickListener('changemode-bicycling', 'BICYCLING');
+
+  //     this.setupPlaceChangedListener(originAutocomplete, 'ORIG');
+  //     this.setupPlaceChangedListener(destinationAutocomplete, 'DEST');
+  //   }
+  // }
+
+  // // Sets a listener on a radio button to change the filter type on Places
+  // // Autocomplete.
+  // setupClickListener(id, mode) {
+  //   const radioButton = document.getElementById(id);
+  //   const me = this;
+  //   radioButton.addEventListener('click', () => {
+  //     me.travelMode = mode;
+  //     me.route();
+  //   });
+  // }
+
+  // setupPlaceChangedListener(autocomplete, mode) {
+  //   const me = this;
+  //   autocomplete.bindTo('bounds', this.map);
+  //   autocomplete.addListener('place_changed', () => {
+  //     const place = autocomplete.getPlace();
+  //     if (!place.place_id) {
+  //       window.alert('Please select an option from the dropdown list.');
+  //       return;
+  //     }
+  //     if (mode === 'ORIG') {
+  //       me.originPlaceId = place.place_id;
+  //       me.setState({ startLocation: place.formatted_address });
+  //     } else {
+  //       me.destinationPlaceId = place.place_id;
+  //       me.setState({ endLocation: place.formatted_address });
+  //     }
+  //     me.route();
+  //   });
+  // }
+
+  // route() {
+  //   if (!this.originPlaceId || !this.destinationPlaceId) {
+  //     return;
+  //   }
+  //   const me = this;
+  //   const directionsPanel = me.refs.directionsPanel;
+
+  //   this.directionsService.route(
+  //     {
+  //       origin: { placeId: this.originPlaceId },
+  //       destination: { placeId: this.destinationPlaceId },
+  //       travelMode: this.travelMode,
+  //       provideRouteAlternatives: true,
+  //       drivingOptions: {
+  //         departureTime: this.departureTime,
+  //         trafficModel: 'bestguess',
+  //       },
+  //     },
+  //     (response, status) => {
+  //       if (status === 'OK') {
+  //         me.directionsDisplay.setDirections(response);
+  //         me.directionsDisplay.setPanel(directionsPanel);
+  //       } else {
+  //         window.alert(`Directions request failed due to ${status}`);
+  //       }
+  //     },
+  //   );
+  // }
+
+
+
+  render() {    
     return (
       <div>
         <section className="add-route col-md-12">
@@ -218,7 +242,7 @@ class AddRoute extends Component {
                 className="form-control"
                 name="startLocation"
                 placeholder="Start Address"
-                ref={input => (this.startLocation = input)}
+                ref="startLocation"
               />
             </div>
             <div className="form-group">
@@ -228,7 +252,7 @@ class AddRoute extends Component {
                 className="form-control"
                 name="endLocation"
                 placeholder="End Address"
-                ref={input => (this.endLocation = input)}
+                ref="endLocation"
               />
             </div>
             <div className="form-group" id="mode-selector" onChange={this.handleInputChange}>
@@ -264,26 +288,9 @@ class AddRoute extends Component {
                 dateFormat={false}
                 inputProps={{ id: 'dateTimeInput' }}
               />
-              {/* <div className="input-group date" id="datetimepicker" ref="datetimepicker">
-                <input type="text" className="form-control" />
-                <span className="input-group-addon">
-                  <span className="glyphicon glyphicon-time" />
-                </span>
-              </div> */}
             </div>
             <button className="btn btn-default">Save Route</button>
           </form>
-        </section>
-        <section className="display-map col-md-12">
-          <h2>Directions</h2>
-          <div className="col-md-6">
-            <div style={style} ref="map">
-              Loading map...
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div style={style} ref="directionsPanel" />
-          </div>
         </section>
       </div>
     );
